@@ -1,5 +1,5 @@
 {
-  "name": "react-data-grid",
+  "name": "matan-react-data-grid",
   "version": "7.0.0-beta.11",
   "license": "MIT",
   "description": "Feature-rich and customizable data grid React component",
@@ -7,7 +7,7 @@
     "react",
     "data grid"
   ],
-  "repository": "github:adazzle/react-data-grid",
+  "repository": "github:matanAlltra/react-data-grid",
   "bugs": "https://github.com/adazzle/react-data-grid/issues",
   "type": "module",
   "exports": {
