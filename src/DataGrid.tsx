@@ -461,7 +461,7 @@ function DataGrid<R, SR, K extends Key>(
 
       gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"][aria-colindex="${column.idx + 1}"]`).forEach((el) => {
           el.style.borderRightColor = "#D3D3D3";
-          el.style.transition = "300ms";
+          el.style.transition = "border 300ms";
       });
       
       onColumnResize?.(column.idx, width);
@@ -473,7 +473,6 @@ function DataGrid<R, SR, K extends Key>(
       gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"]`).forEach((el) => {
           el.style.borderRightColor = "transparent";
       });
-      console.log(gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"]`));
   }
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
