@@ -5,6 +5,7 @@ import type { HeaderRowProps } from './HeaderRow';
 import DefaultHeaderRenderer from './HeaderRenderer';
 import { getCellStyle, getCellClassname, clampColumnWidth } from './utils';
 import { useRovingCellRef } from './hooks';
+import { useState } from 'react';
 
 const cellResizable = css`
   touch-action: none;
@@ -13,14 +14,31 @@ const cellResizable = css`
     content: '';
     cursor: col-resize;
     position: absolute;
+    background: transparent;
     inset-block-start: 0;
     inset-inline-end: 0;
     inset-block-end: 0;
-    inline-size: 10px;
+    inline-size: 5px;
+  }
+`;
+
+const cellResizableHovered = css`
+  touch-action: none;
+
+  &::after {
+    content: '';
+    background: #3ED0DD;
+    cursor: col-resize;
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inline-size: 5px;
   }
 `;
 
 const cellResizableClassname = `rdg-cell-resizable ${cellResizable}`;
+const cellResizableClassnameHovered = `rdg-cell-resizable ${cellResizableHovered}`;
 
 type SharedHeaderRowProps<R, SR> = Pick<
   HeaderRowProps<R, SR, React.Key>,
@@ -62,12 +80,22 @@ export default function HeaderCell<R, SR>({
   const priority = sortColumn !== undefined && sortColumns!.length > 1 ? sortIndex! + 1 : undefined;
   const ariaSort =
     sortDirection && !priority ? (sortDirection === 'ASC' ? 'ascending' : 'descending') : undefined;
-
+    
+  const [resizeHovered, setResizeHovered] = useState(false)
   const className = getCellClassname(column, column.headerCellClass, {
-    [cellResizableClassname]: column.resizable
+    [cellResizableClassname]: column.resizable,
+    [cellResizableClassnameHovered]: resizeHovered,
   });
-
+  
   const HeaderRenderer = column.headerRenderer ?? DefaultHeaderRenderer;
+  
+  function onMouseMove(event: React.PointerEvent<HTMLDivElement>) {
+    
+    const { currentTarget } = event;
+    const target = currentTarget.getBoundingClientRect();
+    var x = event.clientX - target.left; //x position within the element.
+    setResizeHovered((currentTarget.offsetWidth - x) < 10)
+  }
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (event.pointerType === 'mouse' && event.buttons !== 1) {
@@ -180,6 +208,8 @@ export default function HeaderCell<R, SR>({
       }}
       onFocus={handleFocus}
       onClick={onClick}
+      onMouseMove={onMouseMove}
+      onMouseLeave={() => setResizeHovered(false)}
       onDoubleClick={column.resizable ? onDoubleClick : undefined}
       onPointerDown={column.resizable ? onPointerDown : undefined}
     >
