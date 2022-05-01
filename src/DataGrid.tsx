@@ -417,6 +417,7 @@ function DataGrid<R, SR, K extends Key>(
     const columnElement = gridRef.current!.querySelector(
       `[aria-colindex="${autoResizeColumn.idx + 1}"]`
     )!;
+
     const { width } = columnElement.getBoundingClientRect();
     setColumnWidths((columnWidths) => {
       const newColumnWidths = new Map(columnWidths);
@@ -424,6 +425,7 @@ function DataGrid<R, SR, K extends Key>(
       return newColumnWidths;
     });
     setAutoResizeColumn(null);
+    
     onColumnResize?.(autoResizeColumn.idx, width);
   }, [autoResizeColumn, gridRef, onColumnResize]);
 
@@ -446,8 +448,7 @@ function DataGrid<R, SR, K extends Key>(
   /**
    * callbacks
    */
-  const handleColumnResize = useCallback(
-    (column: CalculatedColumn<R, SR>, width: number | 'auto') => {
+  const handleColumnResize = useCallback((column: CalculatedColumn<R, SR>, width: number | 'auto') => {
       if (width === 'auto') {
         setAutoResizeColumn(column);
         return;
@@ -458,10 +459,22 @@ function DataGrid<R, SR, K extends Key>(
         return newColumnWidths;
       });
 
+      gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"][aria-colindex="${column.idx + 1}"]`).forEach((el) => {
+          el.style.borderRightColor = "#D3D3D3";
+          el.style.transition = "300ms";
+      });
+      
       onColumnResize?.(column.idx, width);
     },
     [onColumnResize]
   );
+
+  const onLostResize = () => {
+      gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"]`).forEach((el) => {
+          el.style.borderRightColor = "transparent";
+      });
+      console.log(gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"]`));
+  }
 
   const setDraggedOverRowIdx = useCallback((rowIdx?: number) => {
     setOverRowIdx(rowIdx);
@@ -1173,6 +1186,7 @@ function DataGrid<R, SR, K extends Key>(
         <HeaderRow
           columns={getRowViewportColumns(-1)}
           onColumnResize={handleColumnResize}
+          onLostResize={onLostResize}
           allRowsSelected={allRowsSelected}
           onAllRowsSelectionChange={selectAllRowsLatest}
           sortColumns={sortColumns}

@@ -18,7 +18,7 @@ const cellResizable = css`
     inset-block-start: 0;
     inset-inline-end: 0;
     inset-block-end: 0;
-    inline-size: 5px;
+    inline-size: 2px;
   }
 `;
 
@@ -28,12 +28,13 @@ const cellResizableHovered = css`
   &::after {
     content: '';
     background: #3ED0DD;
+    transition: 300ms;
     cursor: col-resize;
     position: absolute;
     inset-block-start: 0;
     inset-inline-end: 0;
     inset-block-end: 0;
-    inline-size: 5px;
+    inline-size: 2px;
   }
 `;
 
@@ -55,6 +56,7 @@ type SharedHeaderRowProps<R, SR> = Pick<
 export interface HeaderCellProps<R, SR> extends SharedHeaderRowProps<R, SR> {
   column: CalculatedColumn<R, SR>;
   colSpan: number | undefined;
+  onLostResize?: (() => void) | undefined;
   isCellSelected: boolean;
 }
 
@@ -63,6 +65,7 @@ export default function HeaderCell<R, SR>({
   colSpan,
   isCellSelected,
   onColumnResize,
+  onLostResize,
   allRowsSelected,
   onAllRowsSelectionChange,
   sortColumns,
@@ -93,7 +96,7 @@ export default function HeaderCell<R, SR>({
     
     const { currentTarget } = event;
     const target = currentTarget.getBoundingClientRect();
-    var x = event.clientX - target.left; //x position within the element.
+    const x = event.clientX - target.left; //x position within the element.
     setResizeHovered((currentTarget.offsetWidth - x) < 10)
   }
 
@@ -120,6 +123,7 @@ export default function HeaderCell<R, SR>({
     }
 
     function onLostPointerCapture() {
+      onLostResize?.()
       currentTarget.removeEventListener('pointermove', onPointerMove);
       currentTarget.removeEventListener('lostpointercapture', onLostPointerCapture);
     }
