@@ -463,6 +463,7 @@ function DataGrid<R, SR, K extends Key>(
       gridRef.current!.querySelectorAll<HTMLElement>(`[role="gridcell"][aria-colindex="${column.idx + 1}"]`).forEach((el) => {
           el.style.borderRightColor = "#D3D3D3";
           el.style.borderRightWidth = "4px";
+          el.style.borderRightStyle = "solid";
           el.style.transition = "border 300ms";
       });
       
