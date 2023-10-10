@@ -74,4 +74,4 @@ jobs:
           mv ../dist/* .
           git add .
           git commit -m "gh-pages deployment" || echo "Nothing to commit"
-          git push -f https://matanAlltra:${{secrets.GITHUB_TOKEN}}@github.com/matanAlltra/react-data-grid.git
+          git push -f https://port-labs:${{secrets.GITHUB_TOKEN}}@github.com/port-labs/react-data-grid.git
