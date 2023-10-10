@@ -1,3 +1,7 @@
+# For PORT developers, how to contribute to this library:
+
+Please run `npm install && npm run build && npm run build:types`, create a branch and submit a PR. There is no need to publish an npm package.
+
 # react-data-grid
 
 [![npm-badge]][npm-url]
